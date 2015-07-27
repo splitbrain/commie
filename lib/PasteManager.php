@@ -4,8 +4,11 @@ namespace splitbrain\paste;
 
 class PasteManager
 {
+    protected $savedir;
 
-    protected $savedir = __DIR__ . '/../data/';
+    function __construct() {
+        $this->savedir = __DIR__ . '/../data/';
+    }
 
     /**
      * Saves the given content under a new UID

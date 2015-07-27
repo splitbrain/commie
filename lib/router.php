@@ -1,7 +1,7 @@
 <?php
 namespace splitbrain\paste;
 
-require_once 'PasteManager.php';
+require_once __DIR__.'/PasteManager.php';
 
 $paste = new PasteManager();
 

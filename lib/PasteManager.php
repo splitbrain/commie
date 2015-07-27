@@ -5,7 +5,7 @@ namespace splitbrain\paste;
 class PasteManager
 {
 
-    protected $savedir = __DIR__ . '/data/';
+    protected $savedir = __DIR__ . '/../data/';
 
     /**
      * Saves the given content under a new UID
@@ -70,9 +70,11 @@ class PasteManager
         $paste = $this->fn($uid, 'paste');
         if(!file_exists($paste)) return false;
 
-        $path = $this->fn($uid, 'comments');
-        $json = file($path);
         $data = array();
+
+        $path = $this->fn($uid, 'comments');
+        if(!file_exists($path)) return $data;
+        $json = file($path);
         foreach($json as $line) {
             $data[] = json_decode($line, true);
         }

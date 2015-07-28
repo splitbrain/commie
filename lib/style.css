@@ -28,6 +28,7 @@ li div.comment {
     border-left-width: 1em;
     border-left-style: solid;
     overflow: auto;
+    white-space: normal;
 }
 
 li div.comment div.user {

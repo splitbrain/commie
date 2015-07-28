@@ -20,7 +20,7 @@ switch ($_REQUEST['do']) {
         $ret = $paste->loadComments($_REQUEST['uid']);
         break;
     case 'savecomment':
-        $ret = $paste->saveComment($_REQUEST['uid'], (int) $_REQUEST['line'], $_REQUEST['comment'], 'user');
+        $ret = $paste->saveComment($_REQUEST['uid'], (int) $_REQUEST['line'], $_REQUEST['comment'], $_REQUEST['user']);
         break;
     default:
         $ret = false;

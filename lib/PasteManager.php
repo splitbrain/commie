@@ -49,7 +49,7 @@ class PasteManager
      * @param int $line
      * @param string $comment
      * @param string $user
-     * @return bool
+     * @return bool|array
      */
     function saveComment($uid, $line, $comment, $user) {
         $paste = $this->fn($uid, 'paste');
@@ -59,8 +59,12 @@ class PasteManager
 
         $data = compact('line', 'comment', 'user');
         $data['time'] = time();
-        $data = json_encode($data);
-        return (bool) file_put_contents($path, $data."\n", FILE_APPEND);
+        $data['color'] = substr(md5($user),0,6);
+        $json = json_encode($data);
+        if(file_put_contents($path, $json."\n", FILE_APPEND)) {
+            return $data;
+        }
+        return false;
     }
 
     /**

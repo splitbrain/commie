@@ -25,18 +25,32 @@ li div.comment {
     padding: 0.5em;
     background-color: #555;
     max-width: 80em;
+    border-left-width: 1em;
+    border-left-style: solid;
+    overflow: auto;
+}
+
+li div.comment div.user {
+    float: right;
+    font-style: italic;
+    font-size: 95%;
+}
+
+li div.newcomment {
+    max-width: 81em;
+    width: 100%;
 }
 
 li div.newcomment textarea {
-    max-width: 79em;
     width: 100%;
     height: 5em;
+    margin-bottom: 0.1em;
 }
 
 li div.newcomment button {
-    display: block;
-
+    float: right;
 }
+
 
 #help {
     display: none;

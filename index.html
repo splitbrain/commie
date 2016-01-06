@@ -3,36 +3,36 @@
     <meta charset="UTF-8">
     <link href="lib/style.css" rel="stylesheet"/>
     <link href="lib/favicon.ico" rel="shortcut icon"/>
-    <title>commie ☭</title>
+    <title>Commie Paste</title>
 </head>
 <body>
 
+<div id="header">
+<div id="header_content">
+<h1>Commie Paste</h1>
+commie is a pastebin script with line commenting support.
+</div>
+</div>
+
+<div id="content">
 <pre id="paste">
-                         _
-     ___ ___ _____ _____|_|___  <span class="sickle">☭</span>
-    |  _| . |     |     | | -_|
-    |___|___|_|_|_|_|_|_|_|___|
-
-    commie is a pastebin script with line commenting support.
-    available at <a href="https://github.com/splitbrain/commie">github</a>. made by <a href="http://www.splitbrain.org">splitbrain</a>.
-
-
-
 
 </pre>
 <div id="help">☛ Click the line numbers to comment</div>
 
 <div id="new">
-    <label for="newpaste">Create a new paste:</label>
+    <label for="newpaste">Create new paste:</label>
     <textarea id="newpaste"></textarea><br/>
     <button>Save new Paste</button>
-    Remember: everything is public!
+    <br>Remember: everything is public!
+    <br><a href="display.php">See All Paste files</a>
 </div>
 
 <div id="footer">
-    powered by <a href="">commie<sup>☭</sup></a>
+    <img class="logo" src="img/logo.png">
+    Commie Paste | 2015-<script>document.write(new Date().getFullYear())</script>
 </div>
-
+</div>
 
 <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="lib/js.cookie.js"></script>

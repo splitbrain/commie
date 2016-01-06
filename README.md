@@ -25,3 +25,5 @@ future intentions:
 -better paste list
 
 -options to make public or private bin
+
+-simple validation to stop spam

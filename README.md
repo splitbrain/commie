@@ -19,7 +19,8 @@ This was hacked together in a couple of hours. So treat it as beta for now. Pull
 
 -ultra basic paste list
 
-future intentions
+
+future intentions:
 
 -better paste list
 

@@ -1,9 +1,15 @@
 <?php
-require_once __DIR__ . '/lib/lib.php';
-?><html>
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/lib/Token.php';
+
+$saveToken = \splitbrain\paste\Token::issue('save');
+?>
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="commie-token" content="<?php echo \splitbrain\paste\commie_token('save'); ?>">
+    <meta name="commie-token" content="<?= htmlspecialchars($saveToken, ENT_QUOTES) ?>">
     <link href="lib/style.css" rel="stylesheet"/>
     <link href="lib/favicon.ico" rel="shortcut icon"/>
     <title>commie ☭</title>

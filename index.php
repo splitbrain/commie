@@ -1,6 +1,9 @@
-<html>
+<?php
+require_once __DIR__ . '/lib/lib.php';
+?><html>
 <head>
     <meta charset="UTF-8">
+    <meta name="commie-token" content="<?php echo \splitbrain\paste\commie_token('save'); ?>">
     <link href="lib/style.css" rel="stylesheet"/>
     <link href="lib/favicon.ico" rel="shortcut icon"/>
     <title>commie ☭</title>

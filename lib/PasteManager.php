@@ -1,130 +1,109 @@
 <?php
 
+declare(strict_types=1);
+
 namespace splitbrain\paste;
 
-class PasteManager
+final class PasteManager
 {
-    protected $savedir;
-
-    function __construct() {
-        $this->savedir = __DIR__ . '/../data/';
-    }
+    public function __construct(
+        private readonly string $savedir = __DIR__ . '/../data/',
+    ) {}
 
     /**
-     * Saves the given content under a new UID
+     * Save the given content under a freshly generated UID.
      *
-     * @param $content
-     * @return bool|string UID or false on error
+     * @return false|string the UID, or false on write failure
      */
-    function savePaste($content)
+    public function savePaste(string $content): false|string
     {
-        $uid = $this->mkuid();
         do {
+            $uid = $this->mkuid();
             $path = $this->fn($uid, 'paste');
         } while (file_exists($path));
 
         @mkdir(dirname($path), 0777, true);
-        if(file_put_contents($path, $content)){
-            return $uid;
-        }
-        return false;
+        return file_put_contents($path, $content) !== false ? $uid : false;
     }
 
     /**
-     * Loads a paste file
-     *
-     * @param $uid
-     * @return bool|string the paste's content, false on error
+     * @return false|string the paste's content, or false if it does not exist
      */
-    function loadPaste($uid) {
+    public function loadPaste(string $uid): false|string
+    {
         $path = $this->fn($uid, 'paste');
-        if(!file_exists($path)) return false;
-        return file_get_contents($path);
+        return file_exists($path) ? file_get_contents($path) : false;
     }
 
     /**
-     * Stores a comment
+     * Append a comment to the paste's comments file.
      *
-     * @param string $uid
-     * @param int $line
-     * @param string $comment
-     * @param string $user
-     * @return bool|array
+     * @return false|array the stored comment record, or false on failure
      */
-    function saveComment($uid, $line, $comment, $user) {
-        $paste = $this->fn($uid, 'paste');
-        if(!file_exists($paste)) return false;
+    public function saveComment(string $uid, int $line, string $comment, string $user): false|array
+    {
+        if (!file_exists($this->fn($uid, 'paste'))) {
+            return false;
+        }
+
+        $data = [
+            'line'    => $line,
+            'comment' => $comment,
+            'user'    => $user,
+            'time'    => time(),
+            'color'   => substr(md5($user), 0, 6),
+        ];
+
+        $written = file_put_contents(
+            $this->fn($uid, 'comments'),
+            json_encode($data) . "\n",
+            FILE_APPEND,
+        );
+        return $written !== false ? $data : false;
+    }
+
+    /**
+     * @return false|array<int,array> list of comment records, or false if the paste does not exist
+     */
+    public function loadComments(string $uid): false|array
+    {
+        if (!file_exists($this->fn($uid, 'paste'))) {
+            return false;
+        }
 
         $path = $this->fn($uid, 'comments');
-
-        $data = compact('line', 'comment', 'user');
-        $data['time'] = time();
-        $data['color'] = substr(md5($user),0,6);
-        $json = json_encode($data);
-        if(file_put_contents($path, $json."\n", FILE_APPEND)) {
-            return $data;
+        if (!file_exists($path)) {
+            return [];
         }
-        return false;
-    }
 
-    /**
-     * Return all comments
-     *
-     * @param string $uid
-     * @return array|bool
-     */
-    function loadComments($uid) {
-        $paste = $this->fn($uid, 'paste');
-        if(!file_exists($paste)) return false;
-
-        $data = array();
-
-        $path = $this->fn($uid, 'comments');
-        if(!file_exists($path)) return $data;
-        $json = file($path);
-        foreach($json as $line) {
-            $data[] = json_decode($line, true);
+        $out = [];
+        foreach (file($path) ?: [] as $line) {
+            $decoded = json_decode($line, true);
+            if (is_array($decoded)) {
+                $out[] = $decoded;
+            }
         }
-        return $data;
+        return $out;
     }
 
     /**
-     * Get the full path to the file for the given UID and extension
-     *
-     * @param string $uid
-     * @param string $ext
-     * @return string
+     * Build the full path to the UID's file for the given extension.
      */
-    public function fn($uid, $ext)
+    public function fn(string $uid, string $ext): string
     {
-        $prefix = substr($uid, 0, 1);
-        return $this->savedir . $prefix . '/' . $uid . '.' . $ext;
+        return $this->savedir . substr($uid, 0, 1) . '/' . $uid . '.' . $ext;
     }
 
     /**
-     * Creates a unique name
-     *
-     * @link http://stackoverflow.com/a/3537633/172068
-     * @param int $len
-     * @return string
+     * Generate a random alphanumeric UID of the requested length.
      */
-    public function mkuid($len = 8)
+    private function mkuid(int $len = 8): string
     {
-
-        $hex = md5("yourSaltHere" . uniqid("", true));
-
-        $pack = pack('H*', $hex);
-        $tmp = base64_encode($pack);
-
-        $uid = preg_replace("#(*UTF8)[^A-Za-z0-9]#", "", $tmp);
-
         $len = max(4, min(128, $len));
-
+        $uid = '';
         while (strlen($uid) < $len) {
-            $uid .= gen_uuid(22);
+            $uid .= preg_replace('#[^A-Za-z0-9]#', '', base64_encode(random_bytes(16)));
         }
-
         return substr($uid, 0, $len);
     }
-
 }
